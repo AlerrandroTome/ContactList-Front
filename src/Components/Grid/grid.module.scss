@@ -1,67 +1,50 @@
 .container {
-    background: var(--shape);
-    width: 70rem;
-    margin: 2rem auto 2rem auto;
-    padding-top: 1.25rem ;
+  background: var(--shape);
+  width: 70rem;
+  margin: 2rem auto 2rem auto;
+  padding-top: 1.25rem;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.4rem;
+
+  .top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 2rem 0;
+
+    .contact_icon {
+      height: 1.5rem;
+      width: 1.5rem;
+      margin-right: 0.25rem;
+    }
+  }
+
+  .search_container {
+    width: 50rem;
+    padding-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+
+    .box_container {
+      width: 10rem;
+      .text_search {
+        width: 10rem;
+      }
+    }
+  }
+
+  .content {
     display: grid;
     align-items: center;
     justify-content: center;
-    border-radius: 0.40rem;
+    width: 51rem;
 
-    .avatar_container {
-        display: flex;
-        width: 100%;
-        justify-content: flex-end;
-        align-items: center;
-
-        span {
-            font-weight: bold;
-            padding-left: 0.25rem;
-        }
-        
-        .logout_icon {
-            padding-left: 0.25rem;
-            color: var(--red);
-        }
+    .table_content {
+      width: 51rem;
     }
-
-    .top {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        margin: 2rem 0;
-
-        .contact_icon {
-            height: 1.5rem;
-            width: 1.5rem;
-            margin-right: 0.25rem;
-        }
-    }
-
-    .search_container{
-        width: 50rem;
-        padding-bottom: 2rem;
-        display: flex;
-        align-items: center;
-        justify-content: start;
-
-        .box_container {
-            width: 10rem;
-            .text_search {
-                width: 10rem;
-            }
-        }
-    }
-
-    .content {
-        display: grid;
-        align-items: center;
-        justify-content: center;
-        width: 50rem;
-
-        .table_content {
-            width: 50rem;
-        }
-    }
+  }
 }

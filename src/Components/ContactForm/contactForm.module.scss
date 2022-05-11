@@ -1,0 +1,59 @@
+.container {
+  background: var(--shape);
+  width: 70rem;
+  margin: 2rem auto 2rem auto;
+  padding: 2rem;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.4rem;
+
+  .top {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 2rem 0;
+
+    .contact_icon {
+      height: 1.7rem;
+      width: 1.7rem;
+      margin-right: 0.25rem;
+    }
+  }
+
+  .form_group {
+    padding: 0.7rem 0;
+    width: 32rem;
+
+    .input_text {
+      width: 100%;
+
+      &::placeholder {
+        color: var(--text-body);
+      }
+    }
+  }
+
+  button {
+    width: 100%;
+    padding: 0 1.5rem;
+    height: 3rem;
+    background: var(--blue-light);
+    color: #fff;
+    border-radius: 0.25rem;
+    border: 0;
+    font-size: 1rem;
+    margin-top: 1.5rem;
+    transition: filter 0.2s;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    columns: 1fr 1fr;
+
+    &:hover {
+      filter: brightness(0.9);
+    }
+  }
+}

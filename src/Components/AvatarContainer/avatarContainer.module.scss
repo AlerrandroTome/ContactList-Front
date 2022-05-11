@@ -1,0 +1,23 @@
+.avatar_container {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 1rem 0.7rem 0 0;
+
+  .avatar {
+    width: 1.8rem;
+    height: 1.8rem;
+    font-size: 0.9rem;
+  }
+
+  span {
+    font-weight: bold;
+    padding-left: 0.25rem;
+  }
+
+  .logout_icon {
+    padding-left: 0.25rem;
+    color: var(--red);
+  }
+}
