@@ -1,13 +1,18 @@
 import { Avatar } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import styles from "./avatarContainer.module.scss";
+import { useNavigate } from "react-router-dom";
+import { AuthService } from "../../Services/authService";
 
 interface IAvatarContentProps {
   loggedUserName: string;
 }
 
 export function AvatarContainer({ loggedUserName }: IAvatarContentProps) {
-  function stringToColor(string: string) {
+  const navigate = useNavigate();
+  const authService = new AuthService();
+
+  function stringToColor(string: string | "") {
     let hash = 0;
     let i;
 
@@ -25,20 +30,30 @@ export function AvatarContainer({ loggedUserName }: IAvatarContentProps) {
     return color;
   }
 
-  function stringAvatar(name: string) {
-    return {
-      sx: {
-        bgcolor: stringToColor(name),
-      },
-      children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
-    };
+  function stringAvatar(name: string | "") {
+    if (name !== undefined) {
+      let nameArray = name.split(" ");
+      return {
+        sx: {
+          bgcolor: stringToColor(name),
+        },
+        children: `${nameArray[0][0]}${nameArray[1] ? nameArray[1][0] : ""}`,
+      };
+    }
+  }
+
+  function logout() {
+    authService.logout();
+    navigate("/login");
   }
 
   return (
     <div className={styles.avatar_container}>
       <Avatar className={styles.avatar} {...stringAvatar(loggedUserName)} />
       <span>{loggedUserName}</span>
-      <LogoutIcon className={styles.logout_icon} />
+      <button onClick={() => logout()}>
+        <LogoutIcon className={styles.logout_icon} />
+      </button>
     </div>
   );
 }

@@ -32,19 +32,24 @@ export function Login() {
     var post = JSON.stringify(login);
 
     await api
-      .post("/manageLogin", post)
+      .post("/manageLogin/login", post)
       .then(({ data }) => {
-        navigate("/grid");
+        authService.saveUserIntoLocalStorage({
+          id: data.data.id,
+          token: data.data.token,
+          name: data.data.name,
+        });
+        navigate("/");
       })
       .catch((error) => {
         setAnErrorHasOccurred(true);
-        setErrorMessage(error.response.data.errorMessage);
+        setErrorMessage(error.errorMessage);
       });
   }
 
   useEffect(() => {
     if (authService.isUserLogged()) {
-      navigate("/grid");
+      navigate("/");
     }
   }, []);
 

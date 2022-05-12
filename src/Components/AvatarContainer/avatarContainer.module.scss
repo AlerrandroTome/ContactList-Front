@@ -15,9 +15,20 @@
     font-weight: bold;
     padding-left: 0.25rem;
   }
+  button {
+    background-color: var(--background);
+    border: none;
+    padding: 0.3rem;
+    margin: 0 0.5rem;
+    color: var(--text-title);
+    transition: filter 0.5s;
 
-  .logout_icon {
-    padding-left: 0.25rem;
-    color: var(--red);
+    &:hover {
+      filter: brightness(0.9);
+    }
+    .logout_icon {
+      padding-left: 0.25rem;
+      color: var(--red);
+    }
   }
 }

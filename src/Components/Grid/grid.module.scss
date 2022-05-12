@@ -29,10 +29,40 @@
     align-items: center;
     justify-content: start;
 
-    .box_container {
-      width: 10rem;
+    .box_search {
+      width: 30rem;
       .text_search {
-        width: 10rem;
+        width: 30rem;
+      }
+    }
+    .createNewBtn_container {
+      display: flex;
+      width: 50rem;
+      align-items: end;
+      justify-content: end;
+
+      button {
+        padding: 0 1.5rem;
+        height: 3rem;
+        background: var(--blue-light);
+        color: #fff;
+        border-radius: 0.25rem;
+        border: 0;
+        font-size: 1rem;
+        margin-top: 1.5rem;
+        transition: filter 0.2s;
+        font-weight: 600;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        columns: 1fr 1fr;
+        &:hover {
+          filter: brightness(0.9);
+        }
+
+        .button_icon {
+          width: 2rem;
+        }
       }
     }
   }
@@ -43,8 +73,41 @@
     justify-content: center;
     width: 51rem;
 
-    .table_content {
-      width: 51rem;
+    .tableContainer {
+      padding-bottom: 2rem;
+      table {
+        width: 51rem;
+        .tableHeadContainer {
+          background-color: rgba(63, 173, 224, 0.13);
+          tr {
+            th {
+              min-width: 6rem;
+              padding: 0.5rem;
+            }
+          }
+        }
+        .tableDataContainer {
+          tr {
+            td {
+              border-bottom: 1px solid #000;
+              min-width: 6rem;
+              padding: 0.7rem;
+
+              button {
+                background-color: var(--shape);
+                border: none;
+                padding: 0.3rem;
+                color: var(--text-title);
+                transition: filter 0.5s;
+
+                &:hover {
+                  filter: brightness(0.9);
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

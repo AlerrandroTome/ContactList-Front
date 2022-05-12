@@ -55,5 +55,11 @@
     &:hover {
       filter: brightness(0.9);
     }
+
+    &.secondary_button {
+      margin-top: 0.5rem;
+      background: var(--background);
+      color: var(--blue-light);
+    }
   }
 }

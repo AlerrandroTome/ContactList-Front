@@ -2,7 +2,8 @@ import { Alert, Box, TextField } from "@mui/material";
 import PermContactCalendarIcon from "@mui/icons-material/PermContactCalendar";
 import SearchIcon from "@mui/icons-material/Search";
 import Edit from "@mui/icons-material/Edit";
-import Remove from "@mui/icons-material/Remove";
+import Remove from "@mui/icons-material/Delete";
+import Create from "@mui/icons-material/Add";
 import styles from "./grid.module.scss";
 import { useEffect, useState } from "react";
 import { AvatarContainer } from "../AvatarContainer/avatarContainer";
@@ -76,8 +77,10 @@ export function Grid() {
   }, []);
 
   useEffect(() => {
-    GetTableContent();
-  }, [search]);
+    if (loggedUser.id !== undefined) {
+      GetTableContent();
+    }
+  }, [search, loggedUser.id]);
 
   return (
     <>
@@ -107,19 +110,31 @@ export function Grid() {
               fullWidth={true}
             />
           </Box>
+          <div className={styles.createNewBtn_container}>
+            <button
+              className={styles.createNewBtn}
+              onClick={() => navigate("/create")}
+            >
+              <Create className={styles.create_icon} /> Create
+            </button>
+          </div>
         </div>
         <div className={styles.content}>
-          <div className={styles.TableContainer}>
+          <div className={styles.tableContainer}>
             <table>
-              <thead>
-                {columns.map((columns) => (
-                  <th className={styles.TableHeaderCell}>{columns.field}</th>
-                ))}
-                <th>Actions</th>
+              <thead className={styles.tableHeadContainer}>
+                <tr>
+                  {columns.map((columns, i) => (
+                    <th key={i} className={styles.TableHeaderCell}>
+                      {columns.headerName}
+                    </th>
+                  ))}
+                  <th>Actions</th>
+                </tr>
               </thead>
-              <tbody>
-                {rows.map((row) => (
-                  <tr>
+              <tbody className={styles.tableDataContainer}>
+                {rows.map((row, i) => (
+                  <tr key={i}>
                     <td className={styles.TableDataCell}>{row.name}</td>
                     <td className={styles.TableDataCell}>{row.email}</td>
                     <td className={styles.TableDataCell}>{row.phoneNumber}</td>

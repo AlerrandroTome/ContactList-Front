@@ -23,11 +23,17 @@ interface IUser {
 }
 
 export function ContactForm() {
+  const { id } = useParams();
   const [anErrorHasOccurred, setAnErrorHasOccurred] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [contactForm, setContactForm] = useState<IContactForm>(
-    {} as IContactForm
-  );
+  const [contactForm, setContactForm] = useState<IContactForm>({
+    email: "",
+    id: "",
+    name: "",
+    phoneNumber: "",
+    whatsappNumber: "",
+    userId: "",
+  } as IContactForm);
   const [loggedUser, setLoggedUser] = useState({} as IUser);
   const [isEdit, setIsEdit] = useState(false);
   const navigate = useNavigate();
@@ -43,20 +49,22 @@ export function ContactForm() {
       await api
         .put("/manageContact", put)
         .then(({ data }) => {
-          navigate("/grid");
+          navigate("/");
         })
         .catch((error) => {
           setAnErrorHasOccurred(true);
           setErrorMessage(error.response.data.errorMessage);
         });
     } else {
-      setContactForm({ ...contactForm, userId: loggedUser.id });
-      var post = JSON.stringify(contactForm);
+      var post = JSON.stringify({
+        ...contactForm,
+        userId: authService.getCurrentUser().id,
+      });
 
       await api
         .post("/manageContact", post)
         .then(({ data }) => {
-          navigate("/grid");
+          navigate("/");
         })
         .catch((error) => {
           setAnErrorHasOccurred(true);
@@ -66,14 +74,16 @@ export function ContactForm() {
   }
 
   async function getContact(id: string) {
-    const { data } = await api.get(`/manageContact?$filter=id eq '${id}')`);
-
-    if (!data) {
-      setAnErrorHasOccurred(true);
-      setErrorMessage("Contact was not found.");
-    } else {
-      setContactForm(data[0]);
-    }
+    debugger;
+    await api
+      .get(`/manageContact?$filter=Id eq ${id}`)
+      .then(({ data }) => {
+        setContactForm(data[0]);
+      })
+      .catch((error) => {
+        setAnErrorHasOccurred(true);
+        setErrorMessage("Contact was not found");
+      });
   }
 
   useEffect(() => {
@@ -81,10 +91,12 @@ export function ContactForm() {
       navigate("/login");
     } else {
       let user = authService.getCurrentUser();
+      let isEditTemp = id ? true : false;
       setLoggedUser({ id: user.id, name: user.name });
-      const { id } = useParams();
-      setIsEdit(id ? true : false);
-      getContact(id as string);
+      setIsEdit(isEditTemp);
+      if (isEditTemp) {
+        getContact(id as string);
+      }
     }
   }, []);
 
@@ -161,7 +173,7 @@ export function ContactForm() {
           <FormControlLabel
             control={
               <Switch
-                value={contactForm.phoneNumberIsWhatsapp}
+                checked={contactForm.phoneNumberIsWhatsapp}
                 onChange={(input) =>
                   setContactForm({
                     ...contactForm,
@@ -196,6 +208,13 @@ export function ContactForm() {
         </div>
         <button type="button" className={styles.primary_button} onClick={Save}>
           Save
+        </button>
+        <button
+          type="button"
+          className={styles.secondary_button}
+          onClick={() => navigate("/")}
+        >
+          Cancel
         </button>
       </div>
     </>
