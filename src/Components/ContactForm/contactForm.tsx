@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import styles from "./contactForm.module.scss";
 import { AvatarContainer } from "../AvatarContainer/avatarContainer";
+import { api } from "../../apiSettings";
+import { useNavigate, useParams } from "react-router-dom";
+import { AuthService } from "../../Services/authService";
 
 interface IContactForm {
   id: string;
@@ -14,16 +17,76 @@ interface IContactForm {
   userId: string;
 }
 
+interface IUser {
+  name: string;
+  id: string;
+}
+
 export function ContactForm() {
   const [anErrorHasOccurred, setAnErrorHasOccurred] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [contactForm, setContactForm] = useState({} as IContactForm);
-  const [loggedUserName, setLoggedUserName] = useState("Alerrandro Tomé");
+  const [contactForm, setContactForm] = useState<IContactForm>(
+    {} as IContactForm
+  );
+  const [loggedUser, setLoggedUser] = useState({} as IUser);
   const [isEdit, setIsEdit] = useState(false);
+  const navigate = useNavigate();
+  const authService = new AuthService();
 
-  function save() {
-    console.log(contactForm);
+  async function Save() {
+    setAnErrorHasOccurred(false);
+    setErrorMessage("");
+
+    if (isEdit) {
+      let put = JSON.stringify(contactForm);
+
+      await api
+        .put("/manageContact", put)
+        .then(({ data }) => {
+          navigate("/grid");
+        })
+        .catch((error) => {
+          setAnErrorHasOccurred(true);
+          setErrorMessage(error.response.data.errorMessage);
+        });
+    } else {
+      setContactForm({ ...contactForm, userId: loggedUser.id });
+      var post = JSON.stringify(contactForm);
+
+      await api
+        .post("/manageContact", post)
+        .then(({ data }) => {
+          navigate("/grid");
+        })
+        .catch((error) => {
+          setAnErrorHasOccurred(true);
+          setErrorMessage(error.response.data.errorMessage);
+        });
+    }
   }
+
+  async function getContact(id: string) {
+    const { data } = await api.get(`/manageContact?$filter=id eq '${id}')`);
+
+    if (!data) {
+      setAnErrorHasOccurred(true);
+      setErrorMessage("Contact was not found.");
+    } else {
+      setContactForm(data[0]);
+    }
+  }
+
+  useEffect(() => {
+    if (!authService.isUserLogged()) {
+      navigate("/login");
+    } else {
+      let user = authService.getCurrentUser();
+      setLoggedUser({ id: user.id, name: user.name });
+      const { id } = useParams();
+      setIsEdit(id ? true : false);
+      getContact(id as string);
+    }
+  }, []);
 
   useEffect(() => {
     if (contactForm.phoneNumberIsWhatsapp) {
@@ -36,7 +99,7 @@ export function ContactForm() {
 
   return (
     <>
-      <AvatarContainer loggedUserName={loggedUserName} />
+      <AvatarContainer loggedUserName={loggedUser.name} />
       <div className={styles.container}>
         {anErrorHasOccurred ? (
           <Alert severity="error">{errorMessage}</Alert>
@@ -49,6 +112,7 @@ export function ContactForm() {
           <TextField
             label="Name"
             value={contactForm.name}
+            required
             onChange={(input) =>
               setContactForm({ ...contactForm, name: input.target.value })
             }
@@ -130,7 +194,7 @@ export function ContactForm() {
             id="whatsappNumber"
           />
         </div>
-        <button type="button" className={styles.primary_button} onClick={save}>
+        <button type="button" className={styles.primary_button} onClick={Save}>
           Save
         </button>
       </div>

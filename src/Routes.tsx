@@ -5,12 +5,13 @@ import { Grid } from "./Components/Grid/grid";
 import { Login } from "./Components/Login/login";
 
 export const AppRoutes = () => {
-    return(    
-            <Routes>
-                <Route index element={<ContactForm />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/create-account" element={<CreateAccount />} />
-                <Route path="/grid" element={<Grid />} />
-            </Routes>
-    );
-}
+  return (
+    <Routes>
+      <Route index element={<Grid />} />
+      <Route path="/create" element={<ContactForm />} />
+      <Route path="/edit/:id" element={<ContactForm />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/create-account" element={<CreateAccount />} />
+    </Routes>
+  );
+};

@@ -1,8 +1,38 @@
 import axios from "axios";
+import { authHeader } from "./Services/authHeader";
 
 export const api = axios.create({
-  baseURL: "https://localhost:7297",
+  baseURL: "https://localhost:7297/api",
 });
 
-api.defaults.headers.common["Authorization"] =
-  "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJZCI6ImYzZjk5ODY2LWY3NDMtNDk0Yi04ZGVhLWJkMTRjMmE5YjBlNiIsIkxvZ2luIjoiYWxlIiwiQWN0aXZlIjoiYWxlIiwiRXhwaXJhdGlvbkRhdGUiOiIxMi8wNS8yMDIyIDAwOjAwOjAwIiwibmJmIjoxNjUyMjM4NDk5LCJleHAiOjE2NTIzMjQ0MDAsImlhdCI6MTY1MjIzODQ5OSwiaXNzIjoic2VsZiIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjcyOTc7aHR0cDovL2xvY2FsaG9zdDo1Mjk3In0.fRCSj33AIUaV8LaYMkeihC_Ary-fAFhNp5lKnWs-l7s";
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async function (error) {
+    const access_token = JSON.parse(
+      localStorage.getItem("user") as string
+    ).token;
+    if (error.response.status === 401 && access_token) {
+      window.localStorage.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
+
+api.interceptors.request.use(
+  (config) => {
+    if (config !== undefined && config.headers !== undefined) {
+      const token = authHeader();
+      const isLoginRequest = config.url?.includes("login");
+      if (token && !isLoginRequest) {
+        config.headers["Authorization"] = "Bearer " + token;
+      }
+      config.headers["Content-Type"] = "application/json";
+    }
+    return config;
+  },
+  (error) => {
+    Promise.reject(error);
+  }
+);

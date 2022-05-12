@@ -10,10 +10,12 @@ import {
 import PersonIcon from "@mui/icons-material/Person";
 import LoginIcon from "@mui/icons-material/Login";
 import PersonAddIcon from "@mui/icons-material/PersonAddAlt";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./createAccount.module.scss";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { api } from "../../apiSettings";
+import { AuthService } from "../../Services/authService";
 
 export function CreateAccount() {
   const [anErrorHasOccurred, setAnErrorHasOccurred] = useState(false);
@@ -25,10 +27,40 @@ export function CreateAccount() {
   const [canSeePassword, setCanSeePassword] = useState(false);
   const [canSeeConfirmPassword, setCanSeeConfirmPassword] = useState(false);
   const navigate = useNavigate();
+  const authService = new AuthService();
 
-  function createAccount() {
-    console.log({ userName, password });
+  async function createAccount() {
+    setAnErrorHasOccurred(false);
+    setErrorMessage("");
+
+    if (password !== confirmPassword) {
+      setAnErrorHasOccurred(true);
+      setErrorMessage("Password and Confirm Password must be equal.");
+    } else {
+      let user = {
+        name,
+        userName,
+        password,
+      };
+      let post = JSON.stringify(user);
+
+      await api
+        .post("/manageUser", post)
+        .then(({ data }) => {
+          navigate("/login");
+        })
+        .catch((error) => {
+          setAnErrorHasOccurred(true);
+          setErrorMessage(error.response.data.errorMessage);
+        });
+    }
   }
+
+  useEffect(() => {
+    if (authService.isUserLogged()) {
+      navigate("/grid");
+    }
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -46,6 +78,7 @@ export function CreateAccount() {
           onChange={(input) => setName(input.target.value)}
           className={styles.input_text}
           error={anErrorHasOccurred}
+          required
           variant="standard"
           name="username"
           id="username"
@@ -58,6 +91,7 @@ export function CreateAccount() {
           onChange={(input) => setUserName(input.target.value)}
           className={styles.input_text}
           error={anErrorHasOccurred}
+          required
           variant="standard"
           name="username"
           id="username"
@@ -70,6 +104,7 @@ export function CreateAccount() {
           type={canSeePassword ? "text" : "password"}
           value={password}
           className={styles.input_text}
+          required
           onChange={(input) => setPassword(input.target.value)}
           endAdornment={
             <InputAdornment position="end">
@@ -94,6 +129,7 @@ export function CreateAccount() {
           type={canSeeConfirmPassword ? "text" : "password"}
           value={confirmPassword}
           className={styles.input_text}
+          required
           onChange={(input) => setConfirmPassword(input.target.value)}
           endAdornment={
             <InputAdornment position="end">

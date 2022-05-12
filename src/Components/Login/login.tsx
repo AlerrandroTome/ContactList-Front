@@ -5,16 +5,17 @@ import {
   Input,
   InputAdornment,
   InputLabel,
-  OutlinedInput,
   TextField,
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 import LoginIcon from "@mui/icons-material/Login";
 import PersonAddIcon from "@mui/icons-material/PersonAddAlt";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./login.module.scss";
 import { useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { api } from "../../apiSettings";
+import { AuthService } from "../../Services/authService";
 
 export function Login() {
   const [anErrorHasOccurred, setAnErrorHasOccurred] = useState(false);
@@ -23,10 +24,29 @@ export function Login() {
   const [canSeePassword, setCanSeePassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const authService = new AuthService();
 
-  function login() {
-    console.log({ userName, password });
+  async function Login() {
+    let login = { userName, password };
+
+    var post = JSON.stringify(login);
+
+    await api
+      .post("/manageLogin", post)
+      .then(({ data }) => {
+        navigate("/grid");
+      })
+      .catch((error) => {
+        setAnErrorHasOccurred(true);
+        setErrorMessage(error.response.data.errorMessage);
+      });
   }
+
+  useEffect(() => {
+    if (authService.isUserLogged()) {
+      navigate("/grid");
+    }
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -45,6 +65,7 @@ export function Login() {
           className={styles.input_text}
           error={anErrorHasOccurred}
           variant="standard"
+          required
           name="username"
           id="username"
         />
@@ -56,6 +77,7 @@ export function Login() {
           type={canSeePassword ? "text" : "password"}
           value={password}
           className={styles.input_text}
+          required
           onChange={(input) => setPassword(input.target.value)}
           endAdornment={
             <InputAdornment position="end">
@@ -71,7 +93,7 @@ export function Login() {
           }
         />
       </FormControl>
-      <button type="button" className={styles.primary_button} onClick={login}>
+      <button type="button" className={styles.primary_button} onClick={Login}>
         <LoginIcon className={styles.button_icon} />
         Login
       </button>
